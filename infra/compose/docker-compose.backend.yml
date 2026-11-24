@@ -1,0 +1,20 @@
+name: keitaro-manager
+
+services:
+  migrations:
+    container_name: keitaro-manager-migrations
+    image: migrate/migrate:v4.18.3
+    restart: "no"
+    environment:
+      PGPASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env}
+    command:
+      - "-path"
+      - "/migrations"
+      - "-database"
+      - "postgres://${DB_USERNAME:-keitaro}@database:5432/${DB_NAME:-keitaro-manager}?sslmode=disable"
+      - "up"
+    volumes:
+      - ../../backend/internal/database/migrations:/migrations:ro
+    depends_on:
+      database:
+        condition: service_healthy

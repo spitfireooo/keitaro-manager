@@ -1,0 +1,15 @@
+http:
+  addr: "127.0.0.1:8080"
+
+db:
+  host: "127.0.0.1"
+  port: "15433"
+  username: "keitaro"
+  database: "keitaro_manager"
+  ssl_mode: "disable"
+
+keitaro:
+  base_url: "https://keitaro-for-tests.etolegko.com/admin_api/v1"
+  domain_id: 1813
+  group_id: 10332
+  traffic_source_id: 836

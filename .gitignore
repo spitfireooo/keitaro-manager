@@ -1,0 +1,25 @@
+# Local environment
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# Go build artifacts
+/backend/api
+/backend/bin/
+/backend/coverage.out
+.gocache/
+*.exe
+*.test
+
+# React
+node_modules/
+/frontend/dist/
+/frontend/coverage/
+*.tsbuildinfo
+
+# Local editor and OS files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
