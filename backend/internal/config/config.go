@@ -35,6 +35,10 @@ func Load() (Config, error) {
 	v.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 	v.AutomaticEnv()
 
+	if err := v.BindEnv("db.database", "DB_NAME", "DB_DATABASE"); err != nil {
+		return Config{}, fmt.Errorf("bind database name: %w", err)
+	}
+
 	if err := v.ReadInConfig(); err != nil {
 		return Config{}, fmt.Errorf("read configs/config.yaml: %w", err)
 	}

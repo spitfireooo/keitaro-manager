@@ -18,6 +18,11 @@ node_modules/
 /frontend/coverage/
 *.tsbuildinfo
 
+# Local logs and build diagnostics
+logs/
+*.log
+*.prof
+
 # Local editor and OS files
 .idea/
 .vscode/

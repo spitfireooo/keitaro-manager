@@ -3,3 +3,4 @@ name: keitaro-manager
 include:
   - infra/compose/docker-compose.db.yml
   - infra/compose/docker-compose.backend.yml
+  - infra/compose/docker-compose.frontend.yml

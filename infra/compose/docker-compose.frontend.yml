@@ -1,0 +1,20 @@
+name: keitaro-manager
+
+services:
+  frontend:
+    container_name: keitaro-manager-frontend
+    build:
+      context: ../../frontend
+      args:
+        VITE_DESKTOP_DOWNLOAD_URL: ${VITE_DESKTOP_DOWNLOAD_URL:-}
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${FRONTEND_PORT:-8082}:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1/api/ready"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
