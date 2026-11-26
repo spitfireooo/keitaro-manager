@@ -18,6 +18,8 @@ var (
 	errOfferUnavailable   = errors.New("active offer not found in Keitaro")
 	errOfferAlreadyAdded  = errors.New("offer is already in the stream")
 	errOfferNotInStream   = errors.New("offer not found in the stream")
+	errOfferNotRemoved    = errors.New("offer not found among removed offers")
+	errOfferNotActive     = errors.New("only active offers can be pinned")
 	errShareDistribution  = errors.New("offer shares cannot be distributed to 100 percent")
 	errStreamChanged      = errors.New("stream offers changed in Keitaro")
 	errKeitaroPublish     = errors.New("publish stream offers in Keitaro")
@@ -37,31 +39,18 @@ func NewService(repository *Repository, client *keitaro.Client) *Service {
 }
 
 func (s *Service) AddOffer(ctx context.Context, campaignID, streamID, offerID int64) (EditorState, error) {
-	if offerID <= 0 {
-		return EditorState{}, errInvalidOfferID
+	if err := s.validateActiveOffer(ctx, offerID); err != nil {
+		return EditorState{}, err
 	}
 
-	offer, err := s.client.GetOffer(ctx, offerID)
-	if err != nil {
-		var apiErr *keitaro.APIError
-		if errors.As(err, &apiErr) && apiErr.StatusCode == http.StatusNotFound {
-			return EditorState{}, errOfferUnavailable
-		}
-		return EditorState{}, fmt.Errorf("%w: %w", errKeitaroFetch, err)
-	}
-	if offer.ID != offerID || offer.State != "active" {
-		return EditorState{}, errOfferUnavailable
-	}
-
-	return s.editDraft(ctx, campaignID, streamID, func(draft []EditorOffer) ([]EditorOffer, error) {
-		for _, existing := range draft {
-			if existing.OfferID == offerID {
+	return s.editDraft(ctx, campaignID, streamID, func(draft, _ []EditorOffer) ([]EditorOffer, error) {
+		for _, offer := range draft {
+			if offer.OfferID == offerID {
 				return nil, errOfferAlreadyAdded
 			}
 		}
 
-		draft = append(draft, EditorOffer{OfferID: offer.ID, State: "active"})
-		return draft, nil
+		return append(draft, EditorOffer{OfferID: offerID, State: "active"}), nil
 	})
 }
 
@@ -70,7 +59,7 @@ func (s *Service) RemoveOffer(ctx context.Context, campaignID, streamID, offerID
 		return EditorState{}, errInvalidOfferID
 	}
 
-	return s.editDraft(ctx, campaignID, streamID, func(draft []EditorOffer) ([]EditorOffer, error) {
+	return s.editDraft(ctx, campaignID, streamID, func(draft, _ []EditorOffer) ([]EditorOffer, error) {
 		index := slices.IndexFunc(draft, func(offer EditorOffer) bool {
 			return offer.OfferID == offerID
 		})
@@ -83,38 +72,36 @@ func (s *Service) RemoveOffer(ctx context.Context, campaignID, streamID, offerID
 	})
 }
 
-func (s *Service) Cancel(ctx context.Context, campaignID, streamID int64) (EditorState, error) {
-	return s.repository.ClearDraft(ctx, campaignID, streamID)
+func (s *Service) RestoreOffer(ctx context.Context, campaignID, streamID, offerID int64) (EditorState, error) {
+	if err := s.validateActiveOffer(ctx, offerID); err != nil {
+		return EditorState{}, err
+	}
+
+	return s.editDraft(ctx, campaignID, streamID, func(draft, removed []EditorOffer) ([]EditorOffer, error) {
+		matchesID := func(offer EditorOffer) bool {
+			return offer.OfferID == offerID
+		}
+		restored := EditorOffer{OfferID: offerID, State: "active"}
+
+		if index := slices.IndexFunc(draft, matchesID); index >= 0 {
+			if draft[index].State != "removed" {
+				return nil, errOfferAlreadyAdded
+			}
+
+			draft[index] = restored
+			return draft, nil
+		}
+
+		if !slices.ContainsFunc(removed, matchesID) {
+			return nil, errOfferNotRemoved
+		}
+
+		return append(draft, restored), nil
+	})
 }
 
-func (s *Service) editDraft(
-	ctx context.Context,
-	campaignID, streamID int64,
-	edit func([]EditorOffer) ([]EditorOffer, error),
-) (EditorState, error) {
-	return s.repository.Update(ctx, campaignID, streamID, func(state *EditorState) error {
-		remote, err := s.getEditableStream(ctx, campaignID, streamID)
-		if err != nil {
-			return err
-		}
-
-		base := state.DraftOffers
-		if base == nil {
-			reconcileOffers(state, remote.Offers)
-			base = state.PublishedOffers
-		}
-
-		draft, err := edit(slices.Clone(base))
-		if err != nil {
-			return err
-		}
-		if err := redistributeShares(draft); err != nil {
-			return err
-		}
-
-		state.DraftOffers = draft
-		return nil
-	})
+func (s *Service) Cancel(ctx context.Context, campaignID, streamID int64) (EditorState, error) {
+	return s.repository.ClearDraft(ctx, campaignID, streamID)
 }
 
 func (s *Service) Fetch(ctx context.Context, campaignID, streamID int64) (EditorState, error) {
@@ -167,6 +154,90 @@ func (s *Service) Publish(ctx context.Context, campaignID, streamID int64) (Edit
 		}
 
 		confirmPublishedDraft(state, remote.Offers)
+		return nil
+	})
+}
+
+func (s *Service) SetOfferPinned(ctx context.Context, campaignID, streamID, offerID int64, pinned bool) (EditorState, error) {
+	if offerID <= 0 {
+		return EditorState{}, errInvalidOfferID
+	}
+
+	return s.repository.Update(ctx, campaignID, streamID, func(state *EditorState) error {
+		remote, err := s.getEditableStream(ctx, campaignID, streamID)
+		if err != nil {
+			return err
+		}
+
+		offers := state.DraftOffers
+		if offers == nil {
+			reconcileOffers(state, remote.Offers)
+			offers = state.PublishedOffers
+		}
+
+		index := slices.IndexFunc(offers, func(offer EditorOffer) bool {
+			return offer.OfferID == offerID
+		})
+		if index == -1 {
+			return errOfferNotInStream
+		}
+		if offers[index].State != "active" {
+			return errOfferNotActive
+		}
+
+		offers[index].Pinned = pinned
+		return nil
+	})
+}
+
+func (s *Service) validateActiveOffer(ctx context.Context, offerID int64) error {
+	if offerID <= 0 {
+		return errInvalidOfferID
+	}
+
+	offer, err := s.client.GetOffer(ctx, offerID)
+	if err != nil {
+		var apiErr *keitaro.APIError
+		if errors.As(err, &apiErr) && apiErr.StatusCode == http.StatusNotFound {
+			return errOfferUnavailable
+		}
+
+		return fmt.Errorf("%w: %w", errKeitaroFetch, err)
+	}
+
+	if offer.ID != offerID || offer.State != "active" {
+		return errOfferUnavailable
+	}
+
+	return nil
+}
+
+func (s *Service) editDraft(
+	ctx context.Context,
+	campaignID, streamID int64,
+	edit func(draft, removed []EditorOffer) ([]EditorOffer, error),
+) (EditorState, error) {
+	return s.repository.Update(ctx, campaignID, streamID, func(state *EditorState) error {
+		remote, err := s.getEditableStream(ctx, campaignID, streamID)
+		if err != nil {
+			return err
+		}
+
+		base := state.DraftOffers
+		if base == nil {
+			reconcileOffers(state, remote.Offers)
+			base = state.PublishedOffers
+		}
+
+		draft, err := edit(slices.Clone(base), state.RemovedOffers)
+		if err != nil {
+			return err
+		}
+		if err := redistributeShares(draft); err != nil {
+			return err
+		}
+
+		state.DraftOffers = draft
 		return nil
 	})
 }

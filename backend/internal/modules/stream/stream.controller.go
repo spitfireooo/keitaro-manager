@@ -89,6 +89,25 @@ func (c *Controller) RemoveOffer(ctx *fiber.Ctx) error {
 	return ctx.JSON(state)
 }
 
+func (c *Controller) RestoreOffer(ctx *fiber.Ctx) error {
+	campaignID, streamID, err := parseStreamIDs(ctx)
+	if err != nil {
+		return streamErrorResponse(ctx, streamID, err)
+	}
+
+	offerID, err := strconv.ParseInt(ctx.Params("offerID"), 10, 64)
+	if err != nil {
+		return streamErrorResponse(ctx, streamID, errInvalidOfferID)
+	}
+
+	state, err := c.service.RestoreOffer(ctx.UserContext(), campaignID, streamID, offerID)
+	if err != nil {
+		return streamErrorResponse(ctx, streamID, err)
+	}
+
+	return ctx.JSON(state)
+}
+
 func (c *Controller) Cancel(ctx *fiber.Ctx) error {
 	campaignID, streamID, err := parseStreamIDs(ctx)
 	if err != nil {
@@ -96,6 +115,35 @@ func (c *Controller) Cancel(ctx *fiber.Ctx) error {
 	}
 
 	state, err := c.service.Cancel(ctx.UserContext(), campaignID, streamID)
+	if err != nil {
+		return streamErrorResponse(ctx, streamID, err)
+	}
+
+	return ctx.JSON(state)
+}
+
+func (c *Controller) SetOfferPinned(ctx *fiber.Ctx) error {
+	campaignID, streamID, err := parseStreamIDs(ctx)
+	if err != nil {
+		return streamErrorResponse(ctx, streamID, err)
+	}
+
+	offerID, err := strconv.ParseInt(ctx.Params("offerID"), 10, 64)
+	if err != nil {
+		return streamErrorResponse(ctx, streamID, errInvalidOfferID)
+	}
+
+	var input struct {
+		Pinned *bool `json:"pinned"`
+	}
+	if err := ctx.BodyParser(&input); err != nil || input.Pinned == nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"code":    "invalid_body",
+			"message": "pinned must be true or false",
+		})
+	}
+
+	state, err := c.service.SetOfferPinned(ctx.UserContext(), campaignID, streamID, offerID, *input.Pinned)
 	if err != nil {
 		return streamErrorResponse(ctx, streamID, err)
 	}
@@ -167,6 +215,14 @@ func streamErrorResponse(ctx *fiber.Ctx, streamID int64, err error) error {
 	case errors.Is(err, errPublishUnconfirmed):
 		return ctx.Status(fiber.StatusBadGateway).JSON(fiber.Map{
 			"code": "publish_unconfirmed",
+		})
+	case errors.Is(err, errOfferNotRemoved):
+		return ctx.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"code": "offer_not_removed",
+		})
+	case errors.Is(err, errOfferNotActive):
+		return ctx.Status(fiber.StatusConflict).JSON(fiber.Map{
+			"code": "offer_not_active",
 		})
 	default:
 		log.Printf("save editor state for stream %d: %v", streamID, err)
