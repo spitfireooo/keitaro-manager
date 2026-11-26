@@ -1,0 +1,105 @@
+@import 'tailwindcss';
+
+:root {
+  color-scheme: light;
+
+  --bg-app: #f8fafc;
+  --bg-surface: #fff;
+  --bg-subtle: #f8fafc;
+  --bg-hover: #f1f5f9;
+  --bg-overlay: rgb(2 6 23 / 45%);
+  --border-default: #e2e8f0;
+  --border-divider: #f1f5f9;
+  --border-control: #7e8ea6;
+  --text-primary: #0f172a;
+  --text-muted: #475569;
+  --text-accent: #1d4ed8;
+  --text-danger: #b91c1c;
+  --action-primary: #1d4ed8;
+  --action-primary-hover: #1e40af;
+  --action-primary-text: #fff;
+  --focus-ring: #2563eb;
+  --draft-bg: #fef3c7;
+  --draft-text: #451a03;
+}
+
+:root.dark {
+  color-scheme: dark;
+
+  --bg-app: #0b1220;
+  --bg-surface: #111827;
+  --bg-subtle: #182235;
+  --bg-hover: #243349;
+  --bg-overlay: rgb(0 0 0 / 65%);
+  --border-default: #334155;
+  --border-divider: #263346;
+  --border-control: #64748b;
+  --text-primary: #f1f5f9;
+  --text-muted: #a7b4c8;
+  --text-accent: #93c5fd;
+  --text-danger: #fca5a5;
+  --action-primary: #2563eb;
+  --action-primary-hover: #1d4ed8;
+  --action-primary-text: #fff;
+  --focus-ring: #60a5fa;
+  --draft-bg: #422006;
+  --draft-text: #fde68a;
+}
+
+@theme inline {
+  --color-app: var(--bg-app);
+  --color-surface: var(--bg-surface);
+  --color-subtle: var(--bg-subtle);
+  --color-hover: var(--bg-hover);
+  --color-overlay: var(--bg-overlay);
+  --color-line: var(--border-default);
+  --color-divider: var(--border-divider);
+  --color-control: var(--border-control);
+  --color-content: var(--text-primary);
+  --color-muted: var(--text-muted);
+  --color-accent: var(--text-accent);
+  --color-danger: var(--text-danger);
+  --color-primary: var(--action-primary);
+  --color-primary-hover: var(--action-primary-hover);
+  --color-on-primary: var(--action-primary-text);
+  --color-focus: var(--focus-ring);
+  --color-draft: var(--draft-bg);
+  --color-draft-content: var(--draft-text);
+}
+
+@layer base {
+  body {
+    @apply min-h-screen bg-app font-sans text-content antialiased;
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-focus;
+  }
+}
+
+@layer components {
+  .button-secondary,
+  .field-control {
+    @apply rounded-lg border border-control;
+  }
+
+  .button-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-on-primary hover:bg-primary-hover disabled:opacity-55;
+  }
+
+  .button-secondary {
+    @apply inline-flex items-center justify-center gap-2 bg-surface px-3 py-2 text-sm font-medium text-muted hover:bg-hover disabled:opacity-55;
+  }
+
+  .field-label {
+    @apply mb-1.5 block text-sm font-medium text-content;
+  }
+
+  .field-control {
+    @apply block w-full bg-surface px-3 py-2 text-sm text-content placeholder:text-muted;
+  }
+
+  .field-error {
+    @apply mt-1 text-sm text-danger;
+  }
+}

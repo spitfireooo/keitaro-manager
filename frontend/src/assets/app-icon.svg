@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 64 64">
+  <metadata>Route glyph by Lucide Icons and Contributors, ISC license.</metadata>
+  <defs>
+    <linearGradient id="badge" x2="0" y2="1">
+      <stop stop-color="#2563eb" />
+      <stop offset="1" stop-color="#1e3a8a" />
+    </linearGradient>
+  </defs>
+  <rect x="2" y="2" width="60" height="60" rx="14" fill="url(#badge)" />
+  <g transform="translate(7 7) scale(2.08333)" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M9 5h8.5a1 1 0 010 7h-11a1 1 0 000 7H15" />
+    <circle cx="18" cy="19" r="3" />
+    <circle cx="6" cy="5" r="3" />
+  </g>
+</svg>

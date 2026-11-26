@@ -1,0 +1,109 @@
+{
+  "app": {
+    "title": "Keitaro Manager",
+    "language": "Язык",
+    "switchToLight": "Переключить на светлую тему",
+    "switchToDark": "Переключить на тёмную тему",
+    "languages": {
+      "ru": "Русский",
+      "en": "English"
+    },
+    "address": "Адрес",
+    "openAddress": "Перейти по адресу",
+    "invalidAddress": "Введи адрес кампании или списка, например #/campaigns/66 или #/campaigns.",
+    "downloadDesktop": "Скачать приложение для Windows (x64)",
+    "desktopUnavailable": "Установщик пока недоступен"
+  },
+  "common": {
+    "retry": "Повторить",
+    "cancel": "Отмена",
+    "close": "Закрыть",
+    "previous": "Назад",
+    "next": "Далее",
+    "id": "ID"
+  },
+  "campaigns": {
+    "heading": "Кампании",
+    "create": "Создать кампанию",
+    "loading": "Загружаем кампании…",
+    "empty": "Кампаний пока нет.",
+    "name": "Название",
+    "alias": "Алиас"
+  },
+  "createCampaign": {
+    "heading": "Создание кампании",
+    "name": "Название кампании",
+    "country": "Код страны",
+    "offer": "Оффер",
+    "loadingOffers": "Загружаем офферы…",
+    "emptyOffers": "В каталоге нет активных офферов.",
+    "submitting": "Создаём…",
+    "nameRequired": "Введи название кампании.",
+    "countryInvalid": "Введи двухбуквенный код страны, например GM.",
+    "offerRequired": "Выбери оффер."
+  },
+  "streams": {
+    "heading": "Кампания #{{id}}",
+    "back": "К списку кампаний",
+    "loading": "Загружаем потоки…",
+    "empty": "У кампании пока нет потоков.",
+    "invalidCampaign": "Указан неверный ID кампании.",
+    "typeDefault": "По умолчанию",
+    "typeRegular": "Основной",
+    "typeForced": "Принудительный",
+    "offer": "Оффер",
+    "share": "Доля",
+    "emptyOffers": "В потоке нет офферов."
+  },
+  "offerSearch": {
+    "placeholder": "Название или ID оффера",
+    "hideOptions": "Свернуть список офферов",
+    "showOptions": "Показать список офферов",
+    "results": "Найденные офферы",
+    "noResults": "По этому запросу офферов нет."
+  },
+  "editor": {
+    "open": "Редактировать офферы",
+    "close": "Свернуть редактор",
+    "fetch": "Загрузить из Keitaro",
+    "loading": "Загружаем состояние потока…",
+    "draft": "Черновик",
+    "published": "Опубликовано",
+    "archive": "Архив офферов",
+    "status": "Статус",
+    "actions": "Действия",
+    "active": "Активен",
+    "disabled": "Отключён",
+    "removed": "Удалён",
+    "pin": "Закрепить долю оффера #{{id}}",
+    "unpin": "Снять закрепление оффера #{{id}}",
+    "remove": "Удалить оффер #{{id}}",
+    "restore": "Вернуть",
+    "restoreOffer": "Вернуть оффер #{{id}}",
+    "searchOffer": "Найти оффер",
+    "noAvailableOffers": "Нет доступных офферов для добавления.",
+    "add": "Добавить",
+    "cancel": "Отменить черновик",
+    "publish": "Опубликовать"
+  },
+  "errors": {
+    "streamNotFound": "Поток не найден.",
+    "streamNotEditable": "Этот поток не поддерживает редактирование офферов.",
+    "editorStateNotFound": "Состояние редактора не найдено. Загрузи поток из Keitaro.",
+    "offerNotInStream": "Оффер не найден в потоке.",
+    "offerUnavailable": "Активный оффер не найден в каталоге Keitaro.",
+    "offerAlreadyAdded": "Этот оффер уже есть в потоке.",
+    "offerNotRemoved": "Оффер не найден в архиве или среди удалённых строк.",
+    "offerNotActive": "Закреплять можно долю активного оффера.",
+    "invalidShareDistribution": "Закреплённые доли мешают распределить 100%. Сними одно из закреплений и повтори.",
+    "streamChanged": "Поток изменился в Keitaro. Чтобы загрузить свежий состав, отмени черновик и снова загрузи поток.",
+    "publishUnconfirmed": "Keitaro не подтвердил публикацию. Черновик сохранён. Проверь поток или повтори публикацию.",
+    "requestFailed": "Не удалось выполнить запрос.",
+    "pageFailed": "Не удалось открыть страницу.",
+    "keitaroNotConfigured": "Настрой API-ключ Keitaro на бэкенде.",
+    "keitaroRequestFailed": "Keitaro не ответил на запрос. Попробуй ещё раз.",
+    "campaignNotFound": "Кампания не найдена.",
+    "invalidCampaign": "Проверь название, код страны и выбранный оффер.",
+    "creationUnconfirmed": "Keitaro не подтвердил создание. Проверь список кампаний перед повтором."
+  }
+}

@@ -1,0 +1,13 @@
+.git
+.idea
+.vscode
+.env
+.env.*
+node_modules/
+dist/
+dist-ssr/
+dist-desktop/
+coverage/
+src-tauri/
+*.log
+*.tsbuildinfo

@@ -1,0 +1,109 @@
+{
+  "app": {
+    "title": "Keitaro Manager",
+    "language": "Language",
+    "switchToLight": "Switch to light theme",
+    "switchToDark": "Switch to dark theme",
+    "languages": {
+      "ru": "Русский",
+      "en": "English"
+    },
+    "address": "Address",
+    "openAddress": "Go to address",
+    "invalidAddress": "Enter a campaign address, such as #/campaigns or #/campaigns/66.",
+    "downloadDesktop": "Download desktop app for Windows (x64)",
+    "desktopUnavailable": "Desktop installer is unavailable"
+  },
+  "common": {
+    "retry": "Retry",
+    "cancel": "Cancel",
+    "close": "Close",
+    "previous": "Previous",
+    "next": "Next",
+    "id": "ID"
+  },
+  "campaigns": {
+    "heading": "Campaigns",
+    "create": "Create campaign",
+    "loading": "Loading campaigns…",
+    "empty": "No campaigns yet.",
+    "name": "Name",
+    "alias": "Alias"
+  },
+  "createCampaign": {
+    "heading": "Create campaign",
+    "name": "Campaign name",
+    "country": "Country code",
+    "offer": "Offer",
+    "loadingOffers": "Loading offers…",
+    "emptyOffers": "There are no active offers in the catalog.",
+    "submitting": "Creating…",
+    "nameRequired": "Enter a campaign name.",
+    "countryInvalid": "Enter a two-letter country code, such as GM.",
+    "offerRequired": "Select an offer."
+  },
+  "streams": {
+    "heading": "Campaign #{{id}}",
+    "back": "Back to campaigns",
+    "loading": "Loading streams…",
+    "empty": "This campaign has no streams yet.",
+    "invalidCampaign": "The campaign ID is invalid.",
+    "typeDefault": "Default",
+    "typeRegular": "Regular",
+    "typeForced": "Forced",
+    "offer": "Offer",
+    "share": "Share",
+    "emptyOffers": "This stream has no offers."
+  },
+  "offerSearch": {
+    "placeholder": "Offer name or ID",
+    "hideOptions": "Hide offers",
+    "showOptions": "Show offers",
+    "results": "Matching offers",
+    "noResults": "No offers match this search."
+  },
+  "editor": {
+    "open": "Edit offers",
+    "close": "Collapse editor",
+    "fetch": "Fetch from Keitaro",
+    "loading": "Loading stream state…",
+    "draft": "Draft",
+    "published": "Published",
+    "archive": "Offer archive",
+    "status": "Status",
+    "actions": "Actions",
+    "active": "Active",
+    "disabled": "Disabled",
+    "removed": "Removed",
+    "pin": "Pin share for offer #{{id}}",
+    "unpin": "Unpin share for offer #{{id}}",
+    "remove": "Remove offer #{{id}}",
+    "restore": "Restore",
+    "restoreOffer": "Restore offer #{{id}}",
+    "searchOffer": "Find an offer",
+    "noAvailableOffers": "There are no offers available to add.",
+    "add": "Add",
+    "cancel": "Discard draft",
+    "publish": "Publish"
+  },
+  "errors": {
+    "streamNotFound": "Stream not found.",
+    "streamNotEditable": "This stream does not support offer editing.",
+    "editorStateNotFound": "Editor state not found. Fetch the stream from Keitaro.",
+    "offerNotInStream": "The offer was not found in the stream.",
+    "offerUnavailable": "An active offer could not be found in the Keitaro catalog.",
+    "offerAlreadyAdded": "This offer is already in the stream.",
+    "offerNotRemoved": "The offer was not found in the archive or removed rows.",
+    "offerNotActive": "Shares can only be pinned for active offers.",
+    "invalidShareDistribution": "Pinned shares prevent a total of 100%. Unpin one and try again.",
+    "streamChanged": "The stream changed in Keitaro. Discard the draft and fetch again to load the latest offers.",
+    "publishUnconfirmed": "Keitaro did not confirm the publication. The draft is saved. Check the stream or retry publishing.",
+    "requestFailed": "The request failed.",
+    "pageFailed": "The page could not be loaded.",
+    "keitaroNotConfigured": "Configure the Keitaro API key on the backend.",
+    "keitaroRequestFailed": "Keitaro did not respond successfully. Try again.",
+    "campaignNotFound": "Campaign not found.",
+    "invalidCampaign": "Check the name, country code, and chosen offer.",
+    "creationUnconfirmed": "Keitaro did not confirm creation. Check the campaign list before retrying."
+  }
+}
